@@ -72,6 +72,23 @@ def largest_face(gray: np.ndarray, cascade: cv2.CascadeClassifier):
     return max(faces, key=lambda face: face[2] * face[3]) if len(faces) else None
 
 
+def recognize_frame(frame: np.ndarray, model, names: list[str], cascade: cv2.CascadeClassifier) -> list[dict[str, object]]:
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    matches: list[dict[str, object]] = []
+    for x, y, width, height in cascade.detectMultiScale(
+        gray, scaleFactor=1.15, minNeighbors=6, minSize=(100, 100)
+    ):
+        crop = cv2.resize(gray[y:y + height, x:x + width], FACE_SIZE)
+        label, distance = model.predict(crop)
+        known = 0 <= label < len(names) and distance < 65
+        matches.append({
+            "name": names[label] if known else "Unknown",
+            "distance": float(distance),
+            "box": [int(x), int(y), int(width), int(height)],
+        })
+    return matches
+
+
 def list_people() -> None:
     people = get_enrolled_people(FACES_DIR)
     if not people:
