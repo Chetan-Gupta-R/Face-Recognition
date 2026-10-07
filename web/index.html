@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f1f3ed">
+  <title>Fieldwork | Face Recognition</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="rail">
+      <a class="brand" href="#dashboard" aria-label="Fieldwork home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>fieldwork<span class="brand-period">.</span></span>
+      </a>
+      <div class="rail-rule"></div>
+      <div class="rail-label">WORKSPACE</div>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <a class="nav-link active" href="#dashboard"><span class="nav-icon icon-grid" aria-hidden="true"></span>Dashboard</a>
+        <a class="nav-link" href="#people"><span class="nav-icon icon-users" aria-hidden="true"></span>People<span class="nav-count" id="nav-people-count">0</span></a>
+        <a class="nav-link" href="#activity"><span class="nav-icon icon-activity" aria-hidden="true"></span>Activity</a>
+      </nav>
+      <div class="rail-bottom">
+        <div class="privacy-note"><span class="privacy-icon" aria-hidden="true">◎</span><span>Local processing<br><small>Your data stays here</small></span></div>
+        <div class="rail-account"><span class="avatar">CG</span><span>Chetan Gupta<small>Local workspace</small></span><span class="more-dots" aria-hidden="true">···</span></div>
+      </div>
+    </aside>
+
+    <main id="dashboard" class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><b>/</b><strong>Overview</strong></div>
+        <div class="topbar-right"><span class="local-indicator"><i></i>LOCAL SESSION</span><span class="date-label" id="today-label"></span></div>
+      </header>
+
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">FACE RECOGNITION / OVERVIEW</p>
+          <h1>Good to see you<span class="heading-dot">.</span></h1>
+          <p class="lede">Your private recognition workspace, at a glance.</p>
+        </div>
+        <button class="button button-dark" id="train-button" type="button"><span class="button-symbol" aria-hidden="true">↻</span>Train model</button>
+      </section>
+
+      <section class="metrics" aria-label="Workspace summary">
+        <article class="metric metric-primary"><div class="metric-top"><span>ENROLLED PEOPLE</span><span class="metric-icon people-icon" aria-hidden="true">◉</span></div><div class="metric-value" id="metric-people">0</div><div class="metric-foot"><span class="accent-dot"></span><span id="metric-samples">0 total face samples</span></div></article>
+        <article class="metric"><div class="metric-top"><span>MODEL STATUS</span><span class="metric-icon model-icon" aria-hidden="true">⌁</span></div><div class="metric-value metric-word" id="metric-model">Not trained</div><div class="metric-foot"><span class="status-dot status-off" id="model-dot"></span><span id="model-detail">Train to enable recognition</span></div></article>
+        <article class="metric"><div class="metric-top"><span>RECOGNITIONS TODAY</span><span class="metric-icon recognition-icon" aria-hidden="true">✳</span></div><div class="metric-value" id="metric-recognitions">0</div><div class="metric-foot"><span class="accent-dot coral-dot"></span><span>Logged locally</span></div></article>
+      </section>
+
+      <section class="workspace-grid">
+        <section class="camera-panel" aria-labelledby="camera-title">
+          <div class="section-head camera-head">
+            <div><p class="eyebrow">LIVE VIEW</p><h2 id="camera-title">Camera workspace</h2></div>
+            <span class="feed-status" id="feed-status"><i></i><span>Camera off</span></span>
+          </div>
+          <div class="camera-stage" id="camera-stage">
+            <video id="camera-video" autoplay playsinline muted></video>
+            <canvas id="camera-overlay" aria-hidden="true"></canvas>
+            <div class="camera-placeholder" id="camera-placeholder">
+              <div class="camera-glyph" aria-hidden="true"><span></span><i></i></div>
+              <strong>Your camera, on your terms.</strong>
+              <p>Connect when you’re ready. Frames are processed on this device.</p>
+              <button class="button button-lime" id="connect-button" type="button"><span aria-hidden="true">⌕</span>Connect camera</button>
+            </div>
+            <div class="camera-overlay-top"><span class="live-chip" id="live-chip"><i></i>LIVE</span><span class="resolution-chip" id="resolution-chip">—</span></div>
+            <div class="camera-overlay-bottom"><span id="camera-mode">PREVIEW</span><span id="face-count">NO FACES</span></div>
+          </div>
+          <div class="camera-controls">
+            <div class="control-main">
+              <button class="button button-dark" id="recognition-button" type="button" disabled><span class="button-symbol" aria-hidden="true">▷</span>Start recognition</button>
+              <button class="button button-outline" id="stop-camera-button" type="button" disabled><span aria-hidden="true">■</span>Stop camera</button>
+            </div>
+            <div class="capture-control">
+              <label class="name-field"><span class="sr-only">Name to enroll</span><input id="person-name" type="text" maxlength="48" placeholder="Name to enroll" autocomplete="off"></label>
+              <button class="button button-coral" id="enroll-button" type="button" disabled><span aria-hidden="true">＋</span>Enroll face</button>
+            </div>
+          </div>
+          <div class="enroll-progress" id="enroll-progress" hidden><div class="progress-label"><span id="enroll-message">Capturing samples</span><span id="enroll-count">0 / 30</span></div><div class="progress-track"><span id="enroll-bar"></span></div></div>
+          <div class="camera-footnote"><span class="tiny-shield" aria-hidden="true">◆</span>Frame analysis stays on this device.</div>
+        </section>
+
+        <aside class="side-column">
+          <section class="panel people-panel" id="people" aria-labelledby="people-title">
+            <div class="section-head"><div><p class="eyebrow">YOUR DATABASE</p><h2 id="people-title">People <span class="heading-count" id="people-count">0</span></h2></div><span class="panel-mark" aria-hidden="true">↗</span></div>
+            <div class="people-list" id="people-list"><div class="empty-state"><span aria-hidden="true">＋</span><p>No one enrolled yet</p><small>Connect your camera to add someone.</small></div></div>
+            <div class="panel-footer"><span id="people-footer">LOCAL FACE PROFILES</span><span aria-hidden="true">•••</span></div>
+          </section>
+
+          <section class="panel activity-panel" id="activity" aria-labelledby="activity-title">
+            <div class="section-head"><div><p class="eyebrow">LATEST EVENTS</p><h2 id="activity-title">Recognition log</h2></div><span class="activity-live"><i></i>SYNCED</span></div>
+            <div class="activity-list" id="activity-list"><div class="empty-activity">No recent recognitions.<br><span>They’ll appear here as they happen.</span></div></div>
+            <div class="panel-footer"><span>PRIVATE · STORED ON DEVICE</span><span aria-hidden="true">↗</span></div>
+          </section>
+        </aside>
+      </section>
+      <footer class="page-footer"><span>FIELDWORK <b>·</b> LOCAL FACE RECOGNITION</span><span>EDUCATIONAL DEMO · NOT FOR SECURE AUTHENTICATION</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
