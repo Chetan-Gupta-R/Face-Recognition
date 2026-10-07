@@ -57,7 +57,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ### 1. Enroll a person
 
 ```powershell
-python face_recognition_app.py enroll Chetan
+python app.py enroll Chetan
 ```
 
 This captures multiple face samples from the webcam and stores them in `data/faces/<name>/`.
@@ -65,7 +65,7 @@ This captures multiple face samples from the webcam and stores them in `data/fac
 ### 2. Train the model
 
 ```powershell
-python face_recognition_app.py train
+python app.py train
 ```
 
 This trains the local LBPH recognizer using the saved samples.
@@ -73,7 +73,7 @@ This trains the local LBPH recognizer using the saved samples.
 ### 3. Recognize faces
 
 ```powershell
-python face_recognition_app.py recognize
+python app.py recognize
 ```
 
 The app shows recognized names on the webcam feed and appends entries to `data/recognized_faces.txt`.
@@ -81,13 +81,13 @@ The app shows recognized names on the webcam feed and appends entries to `data/r
 ### 4. List saved people
 
 ```powershell
-python face_recognition_app.py list
+python app.py list
 ```
 
 ### 5. Remove a person
 
 ```powershell
-python face_recognition_app.py remove Chetan
+python app.py remove Chetan
 ```
 
 Press `Q` to close any webcam window.
