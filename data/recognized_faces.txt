@@ -1,0 +1,2 @@
+# Recognized faces log
+# Format: YYYY-MM-DD HH:MM:SS | name | distance
