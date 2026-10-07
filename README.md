@@ -1,43 +1,27 @@
 # Face Recognition Demo
 
-A lightweight local webcam face-recognition project built with OpenCV. It enrolls people, trains a local LBPH model, recognizes faces from the webcam, and keeps a log of recognized identities in the `data/` folder.
+A local face-recognition demo built with Python and OpenCV. Use the browser dashboard to enroll people, train an LBPH model, view live recognition results, and review a local recognition log.
 
 ## Features
 
-- Enroll new people with live webcam samples
-- Train a local recognition model from saved face images
-- Recognize faces in real time from the webcam
-- List enrolled people and sample counts
-- Remove a person and their saved samples
-- Save recognized results to `data/recognized_faces.txt`
-
-## Project structure
-
-```text
-.
-├── face_recognition_app.py
-├── requirements.txt
-├── README.md
-├── .gitignore
-├── tests/
-│   └── test_face_recognition_app.py
-├── data/
-│   ├── faces/
-│   ├── labels.json
-│   ├── trainer.yml
-│   └── recognized_faces.txt
-└── .venv/
-```
+- Browser dashboard with live camera preview and face-detection overlays
+- Enroll people from the browser or command line
+- Train a local OpenCV LBPH recognizer
+- View enrolled profiles, sample counts, model status, and recent recognition events
+- Remove a profile and its saved samples
+- Store face samples, model files, and recognition history under `data/`
 
 ## Requirements
 
-- Windows, Linux, or macOS
-- Python 3.10+
-- Working webcam
+- Python 3.10 or newer
+- A webcam
+- Windows, macOS, or Linux
+
+The browser dashboard uses the browser's camera permission and the Python standard-library HTTP server. OpenCV and NumPy are installed from `requirements.txt`.
 
 ## Setup
 
-From the project root:
+From the project folder, create and activate a virtual environment, then install dependencies:
 
 ```powershell
 python -m venv .venv
@@ -46,58 +30,63 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-If PowerShell blocks script execution, run:
+On macOS or Linux, activate the environment with `source .venv/bin/activate` instead.
+
+## Browser Dashboard
+
+Start the local server:
 
 ```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+python web_app.py
 ```
 
-## Usage
+Open [http://127.0.0.1:8765](http://127.0.0.1:8765), then:
 
-### 1. Enroll a person
+1. Select **Connect camera** and grant camera permission in your browser.
+2. Enter a name and select **Enroll face**. Keep your face visible while the dashboard captures 30 samples.
+3. Select **Train model** after enrolling or changing people.
+4. Select **Start recognition** to see live match labels and update the local activity log.
+
+The browser preview stays in the browser. For recognition and enrollment, reduced-size camera frames are sent to the Python server on this device at `127.0.0.1`; no camera data is sent to a remote service. The server accepts browser mutations only from its local dashboard origin. Stop it with `Ctrl+C` in the terminal.
+
+The model is marked stale after face data changes. Train again before recognition. The dashboard is intended for a single local user and does not provide authentication for network access.
+
+## Command-Line Use
+
+The CLI is available through `face_recognition_app.py`:
 
 ```powershell
-python app.py enroll Chetan
+python face_recognition_app.py enroll Chetan
+python face_recognition_app.py train
+python face_recognition_app.py recognize
+python face_recognition_app.py list
+python face_recognition_app.py remove Chetan
 ```
 
-This captures multiple face samples from the webcam and stores them in `data/faces/<name>/`.
+Enrollment and recognition use an OpenCV camera window in CLI mode; press `Q` to close it. `app.py` contains the core implementation, and `face_recognition_app.py` is the CLI compatibility entry point.
 
-### 2. Train the model
+Optional interfaces are also available: `python frontend.py` opens the desktop window, and `python gui_app.py` opens a terminal menu.
+
+## Data Files
+
+```text
+data/
+├── faces/<person-name>/     # Captured face samples
+├── labels.json              # Names associated with model labels
+├── trainer.yml              # Trained LBPH model
+└── recognized_faces.txt     # Timestamped recognition events
+```
+
+The face samples and recognition log contain personal data. Keep them local, and remove them when they are no longer needed.
+
+## Tests
+
+Run the unit tests from the project root:
 
 ```powershell
-python app.py train
+python -m unittest discover -s tests -v
 ```
 
-This trains the local LBPH recognizer using the saved samples.
+## Limitations
 
-### 3. Recognize faces
-
-```powershell
-python app.py recognize
-```
-
-The app shows recognized names on the webcam feed and appends entries to `data/recognized_faces.txt`.
-
-### 4. List saved people
-
-```powershell
-python app.py list
-```
-
-### 5. Remove a person
-
-```powershell
-python app.py remove Chetan
-```
-
-Press `Q` to close any webcam window.
-
-## Notes
-
-- The app stores training data and logs locally on your machine.
-- It is intended for educational and local demo use.
-- It is not a secure identity system and should not be used for sensitive authentication.
-
-## Important limitation
-
-This is a learning/demo project, not a secure replacement for Windows Hello or enterprise biometric authentication. Face matching can be affected by lighting, camera angle, masks, and other variations, and should not be treated as a trusted security control.
+This is an educational demo, not a secure identity or authentication system. Face matching can be affected by lighting, camera angle, masks, and other conditions; do not use it to protect sensitive information or make consequential decisions.
